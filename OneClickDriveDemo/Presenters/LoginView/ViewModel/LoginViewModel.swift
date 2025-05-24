@@ -5,19 +5,53 @@
 //  Created by Ravi Seta on 21/05/25.
 //
 
-
 import Foundation
 import Combine
+import Observation
 
+@Observable
 @MainActor
-class LoginViewModel: ObservableObject {
-    @Published var email = "john@mail.com"
-    @Published var password = "changeme"
-    @Published var isLoading = false
-    @Published var errorMessage: String?
-    @Published var alertToDisplay: AlertData?
+class LoginViewModel {
+    var email = "john@mail.com"
+    var password = "changeme"
+    var isLoading = false
+    var errorMessage: String?
+    var alertToDisplay: AlertData?
+    
+    public init(email: String = "john@mail.com", password: String = "changeme", isLoading: Bool = false, errorMessage: String? = nil, alertToDisplay: AlertData? = nil) {
+        self.email = email
+        self.password = password
+        self.isLoading = isLoading
+        self.errorMessage = errorMessage
+        self.alertToDisplay = alertToDisplay
+    }
+
+    private func validateInputs() -> String? {
+        if email.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+            return "Email cannot be empty."
+        }
+        if !isValidEmail(email) {
+            return "Please enter a valid email address."
+        }
+        if password.isEmpty {
+            return "Password cannot be empty."
+        }
+        return nil
+    }
+
+    private func isValidEmail(_ email: String) -> Bool {
+        let emailRegEx = "[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,64}"
+        let emailPred = NSPredicate(format:"SELF MATCHES %@", emailRegEx)
+        return emailPred.evaluate(with: email.trimmingCharacters(in: .whitespacesAndNewlines))
+    }
     
     func login(router: AppRouter) async {
+        if let validationError = validateInputs() {
+            self.errorMessage = validationError
+            self.alertToDisplay = .init(title: "Validation Error", message: validationError, actions: [.init(title: "OK")])
+            return
+        }
+        
         isLoading = true
         defer { isLoading = false }
         
@@ -43,28 +77,16 @@ class LoginViewModel: ObservableObject {
         } catch {
             errorMessage = error.localizedDescription
             self.alertToDisplay = .init(error: error)
-            
         }
     }
     
     private func fetchUserProfile() async {
-        guard let token = AppKeyChainManager.shared.accessToken else {
-            self.errorMessage = "No token found"
-            return
-        }
-        
-        let options = RestOptions(
-            headers: [
-                "Authorization": "Bearer \(token)",
-            ],
-            apiEndpoint: .base
-        )
         do {
             let response: UserProfile = try await APIManager.shared.perform(
                 path: .profile,
                 method: .get,
                 body: EmptyBody(),
-                options: options,
+                options: nil,
                 responseType: UserProfile.self
             )
             print("response", response)
@@ -75,4 +97,3 @@ class LoginViewModel: ObservableObject {
         }
     }
 }
-

@@ -13,7 +13,15 @@ enum AppScreen {
     case home
 }
 class AppRouter: ObservableObject {
-    @Published var currentScreen: AppScreen = .login
+    @Published var currentScreen: AppScreen 
+
+    init() {
+        if AppKeyChainManager.shared.accessToken != nil {
+            self.currentScreen = .home
+        } else {
+            self.currentScreen = .login
+        }
+    }
 
     func showHome() {
         currentScreen = .home

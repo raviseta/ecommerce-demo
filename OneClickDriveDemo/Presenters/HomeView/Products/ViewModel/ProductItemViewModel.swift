@@ -12,17 +12,23 @@ class ProductItemViewModel: Identifiable, ObservableObject {
     let name: String
     let imageUrl: String
     let price: Double
-    
+    let description: String
+    let images: [String]
+
     init(
         id: Int,
         name: String,
         imageUrl: String,
-        price: Double
+        price: Double,
+        description: String,
+        images: [String]
     ) {
         self.id = id
         self.name = name
         self.imageUrl = imageUrl
         self.price = price
+        self.description = description
+        self.images = images
     }
 }
 
@@ -32,7 +38,9 @@ extension ProductItemViewModel {
             id: Int.random(in: 1...999_999),
             name: .dummyLongText,
             imageUrl: "https://example.com/food.png",
-            price: Double.random(in: 1...999_999)
+            price: Double.random(in: 1...999_999),
+            description: .dummyLongText,
+            images: []
         )
     }
 }
@@ -44,8 +52,9 @@ extension ProductItemViewModel {
             id: item.id,
             name: item.title,
             imageUrl: item.images.first ?? "https://example.com/food.png",
-            price: item.price
-        
+            price: item.price,
+            description: item.description,
+            images: []
         )
     }
 }

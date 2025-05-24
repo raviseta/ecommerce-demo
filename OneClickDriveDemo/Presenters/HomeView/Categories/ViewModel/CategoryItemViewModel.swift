@@ -7,7 +7,7 @@
 
 import Foundation
 
-class CategoryItemViewModel: Identifiable, ObservableObject {
+class CategoryItemViewModel: Identifiable, ObservableObject, Hashable {
     let id: Int
     let categoryName: String
     let imageUrl: String
@@ -20,6 +20,14 @@ class CategoryItemViewModel: Identifiable, ObservableObject {
         self.id = id
         self.categoryName = categoryName
         self.imageUrl = imageUrl
+    }
+    
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(id)
+    }
+
+    static func == (lhs: CategoryItemViewModel, rhs: CategoryItemViewModel) -> Bool {
+        lhs.id == rhs.id
     }
 }
 
@@ -40,7 +48,6 @@ extension CategoryItemViewModel {
             id: item.id,
             categoryName: item.name,
             imageUrl: item.image
-        
         )
     }
 }

@@ -16,7 +16,7 @@ enum ErrorMessage: String {
     case noError = "No Error."
     case fileNotFound = "Unable to find file."
     case unknownError = "Unknown error."
-    case emptyState = "Please check after some time."
+    case emptyState = "Unable to load. Please check after some time."
 }
 
 enum ErrorDomain: String {

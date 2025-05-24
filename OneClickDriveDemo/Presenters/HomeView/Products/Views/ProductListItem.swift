@@ -40,6 +40,10 @@ private extension ProductListItem {
             Text(viewModel.name)
                 .foregroundStyle(Color.black)
             
+            Text(viewModel.description)
+                .font(.subheadline)
+                .foregroundStyle(Color.black)
+            
             Text("$\(viewModel.price, specifier: "%.2f")")
                 .font(.subheadline)
                 .foregroundColor(.secondary)

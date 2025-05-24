@@ -6,15 +6,21 @@
 //
 
 import Foundation
+import Observation
 
+@Observable
 @MainActor
-final class HomeViewModel: ObservableObject {
-    @Published var selectedCategoryId: Int?
-    @Published var categories: [CellDataSource<CategoryItemViewModel>] = []
-    @Published var products: [CellDataSource<ProductItemViewModel>] = []
-    @Published var errorMessage: String?
-    @Published var alertToDisplay: AlertData?
-    @Published var taskId = UUID()
+final class HomeViewModel {
+    var selectedCategory: CategoryItemViewModel?
+    var categories: [CellDataSource<CategoryItemViewModel>] = []
+    var products: [CellDataSource<ProductItemViewModel>] = []
+    var errorMessage: String?
+    var alertToDisplay: AlertData?
+    var taskId = UUID()
+    var hasMoreProducts = true
+    var minPrice: String = ""
+    var maxPrice: String = ""
+    var filterCategories: [CategoryItemViewModel] = []
     
     private var offset = 0
     private let limit = 10
@@ -22,7 +28,7 @@ final class HomeViewModel: ObservableObject {
     
     func loadInitialData() async {
         await fetchCategories()
-        await fetchProducts()
+        await fetchProducts(reset: true)
     }
     
     func fetchCategories() async {
@@ -42,7 +48,14 @@ final class HomeViewModel: ObservableObject {
             
             await MainActor.run {
                 self.categories = response.map({.data(.init(item: $0))})
-                print("categories", categories)
+                if !categories.isEmpty {
+                    self.filterCategories = categories.compactMap { data in
+                        switch data {
+                        case .data(let vm): return vm
+                        default: return nil
+                        }
+                    }
+                }
             }
         } catch {
             errorMessage = error.localizedDescription
@@ -50,13 +63,24 @@ final class HomeViewModel: ObservableObject {
         }
     }
     
-    func fetchProducts() async {
+    func loadMoreProductsIfNeeded(currentItem item: ProductItemViewModel) async {
         
-        await MainActor.run {
-            self.products = Array(repeating: .loader(.init()), count: 3)
+        guard let lastProduct = products.last?.data else { return }
+        if lastProduct.id == item.id && hasMoreProducts && !isLoading {
+            await fetchProducts(reset: false)
         }
+    }
+    
+    func fetchProducts(reset: Bool = false) async {
+        if reset {
+            offset = 0
+            hasMoreProducts = true
+            products = []
+            
+        }
+        products = [.loader(.init()), .loader(.init()), .loader(.init())]
         
-        if isLoading {
+        if isLoading || !hasMoreProducts {
             return
         }
         
@@ -65,17 +89,14 @@ final class HomeViewModel: ObservableObject {
         
         var params: Parameters = ["offset": offset, "limit": limit]
         
-        guard let token = AppKeyChainManager.shared.accessToken else {
-            return
-        }
-        
-        let options = RestOptions(
-            headers: ["Authorization": "Bearer \(token)"],
-            apiEndpoint: .base
-        )
-        
-        if let categoryId = selectedCategoryId {
+        if let categoryId = selectedCategory?.id {
             params["categoryId"] = categoryId
+        }
+        if let minPriceDouble = Double(minPrice), minPriceDouble > 0 {
+            params["price_min"] = minPriceDouble
+        }
+        if let maxPriceDouble = Double(maxPrice), maxPriceDouble > 0 {
+            params["price_max"] = maxPriceDouble
         }
         
         do {
@@ -84,7 +105,7 @@ final class HomeViewModel: ObservableObject {
                 method: .get,
                 queryParams: params,
                 body: EmptyBody(),
-                options: options,
+                options: nil,
                 responseType: [Product].self
             )
             
@@ -93,17 +114,36 @@ final class HomeViewModel: ObservableObject {
             }
             
             await MainActor.run {
-                self.products = response.map { .data(.init(item: $0)) }
+                if reset {
+                    self.products = response.map { .data(.init(item: $0)) }
+                } else {
+                    self.products.append(contentsOf: response.map { .data(.init(item: $0)) })
+                }
+                
+                hasMoreProducts = response.count >= limit
             }
             
             offset += limit
             
         } catch is CancellationError {
-            print("⚠️ fetchProducts was cancelled")
+            print("fetchProducts was cancelled")
         } catch {
             await MainActor.run {
                 self.alertToDisplay = .init(error: error)
             }
+        }
+    }
+    
+    func refreshProducts() async {
+        await fetchProducts(reset: true)
+    }
+    
+    func clearFilters() {
+        selectedCategory = nil
+        minPrice = ""
+        maxPrice = ""
+        Task {
+            await refreshProducts()
         }
     }
 }

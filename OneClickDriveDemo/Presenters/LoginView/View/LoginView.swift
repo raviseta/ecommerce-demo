@@ -1,32 +1,44 @@
-//
-//  LoginView.swift
-//  OneClickDriveDemo
-//
-//  Created by Ravi Seta on 21/05/25.
-//
-
-
 import SwiftUI
 
 struct LoginView: View {
-    @StateObject private var viewModel = LoginViewModel()
+    @State private var viewModel: LoginViewModel = LoginViewModel()
     @EnvironmentObject var router: AppRouter
 
     var body: some View {
-        VStack(spacing: 16) {
-            TextField("Email", text: $viewModel.email)
-                .textFieldStyle(.roundedBorder)
-                .keyboardType(.emailAddress)
-            
-            TextField("Password", text: $viewModel.password)
-                .textFieldStyle(.roundedBorder)
+        VStack(spacing: 20) {
+            Text("Login")
+                .font(.largeTitle)
+                .fontWeight(.bold)
 
-            Button("Login") {
-                Task {
-                    await viewModel.login(router: router)
+            TextField("Email", text: $viewModel.email)
+                .keyboardType(.emailAddress)
+                .autocapitalization(.none)
+                .padding()
+                .background(Color(.secondarySystemBackground))
+                .cornerRadius(8)
+
+            SecureField("Password", text: $viewModel.password)
+                .padding()
+                .background(Color(.secondarySystemBackground))
+                .cornerRadius(8)
+
+            if viewModel.isLoading {
+                ProgressView()
+            } else {
+                Button(action: {
+                    Task {
+                        await viewModel.login(router: router)
+                    }
+                }) {
+                    Text("Login")
+                        .font(.headline)
+                        .foregroundColor(.white)
+                        .padding()
+                        .frame(maxWidth: .infinity)
+                        .background(Color.blue)
+                        .cornerRadius(8)
                 }
             }
-            .disabled(viewModel.isLoading)
         }
         .alert(for: $viewModel.alertToDisplay)
         .padding()

@@ -8,24 +8,26 @@
 import SwiftUI
 
 struct HomeView: View {
-    @StateObject var viewModel = HomeViewModel()
+    @State var viewModel = HomeViewModel()
+    @EnvironmentObject var router: AppRouter
     @State private var hasLoadedInitialData = false
+    @State private var showFilterSheet = false
+    @State private var showLogoutAlert = false
     
     var body: some View {
         NavigationView {
             GeometryReader { containerProxy in
-
-            ScrollView {
-                VStack(alignment: .leading, spacing: 16) {
+                ScrollView {
+                    VStack(alignment: .leading, spacing: 16) {
                         ScrollView(.horizontal, showsIndicators: false) {
                             categoryView(for: containerProxy)
                                 .scrollTargetLayout()
                         }
                         .scrollTargetBehavior(.viewAligned)
                     }
-                    .frame(height: 400) // 👈 Add this fixed height!
+                    .frame(height: 400)
+                    
                     LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 16) {
-                        
                         productListView
                     }
                     .padding(.horizontal)
@@ -38,39 +40,68 @@ struct HomeView: View {
                         hasLoadedInitialData = true
                     }
                     await viewModel.loadInitialData()
+                    
                 }
                 .alert(for: $viewModel.alertToDisplay)
                 .navigationTitle("Home")
-            }
-        }
-    }
-    
-    @ViewBuilder
-    var productListView: some View {
-        if viewModel.products.isEmpty {
-            
-            // emptyStateView
-            
-        } else {
-            ForEach(viewModel.products, id: \.id) { data in
-                switch data {
-                case .loader(_):
-                    self.prepareProductListItem(model: .placeholder)
-                        .shimmering()
-                    
-                case .data(let model):
-                    self.prepareProductListItem(model: model)
-                        .padding(.bottom, 12)
+                .navigationBarItems(leading:
+                                        Button(action: {
+                    showLogoutAlert = true
+                }) {
+                    Image(systemName: "power")
+                }
+                                    ,trailing:
+                                        Button(action: {
+                    showFilterSheet = true
+                }) {
+                    Image(systemName: "slider.horizontal.3")
+                }
+                )
+                .sheet(isPresented: $showFilterSheet) {
+                    FilterView(
+                        viewModel: FilterViewModel(
+                            categories: viewModel.filterCategories,
+                            selectedCategory: viewModel.selectedCategory,
+                            minPrice: viewModel.minPrice,
+                            maxPrice: viewModel.maxPrice,
+                            actions: .init(
+                            onApply: { apply in
+                                viewModel.selectedCategory = apply.0
+                                viewModel.minPrice = apply.1
+                                viewModel.maxPrice = apply.2
+
+                                showFilterSheet = false
+                                Task {
+                                    await viewModel.refreshProducts()
+                                }
+                            }, onClear: {
+                                showFilterSheet = false
+                                viewModel.clearFilters() // This already triggers a refresh via taskId
+                            })))
+                }
+                .alert("Logout", isPresented: $showLogoutAlert) {
+                    Button("Cancel", role: .cancel) { }
+                    Button("Logout", role: .destructive) {
+                        AppKeyChainManager.shared.deleteAll()
+                        router.showLogin()
+                    }
+                } message: {
+                    Text("Are you sure you want to logout?")
                 }
             }
         }
     }
-    
-    func prepareProductListItem(model: ProductItemViewModel) -> some View {
-        ProductListItem(viewModel: model)
-            .frame(maxWidth: .infinity)
-            .background(Color.getAppColor(.gray30))
-            .clipShape(RoundedRectangle(cornerRadius: 12))
-    }
-    
+}
+
+@ViewBuilder
+var emptyStateView: some View {
+    EmptyStateView(
+        viewModel: .init(
+            image: .placeHolderImage,
+            title: applicationName,
+            message: ErrorMessage.emptyState.rawValue,
+            size: .init(width: 72, height: 72)
+        )
+    )
+    .frame(maxHeight: .infinity)
 }

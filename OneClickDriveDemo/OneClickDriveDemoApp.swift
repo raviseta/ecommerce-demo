@@ -9,6 +9,7 @@ import SwiftUI
 
 @main
 struct OneClickDriveDemoApp: App {
+
     var body: some Scene {
         WindowGroup {
             RootView()
