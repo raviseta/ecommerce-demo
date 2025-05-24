@@ -6,7 +6,6 @@
 //
 
 protocol Configuration {
-    var environmentName: String { get }
     var apiUrl: String { get }
 }
 
@@ -15,13 +14,11 @@ protocol Development: Configuration {
 }
 
 struct DevConfiguration: Development {
-    let environmentName = "Development"
     let apiUrl = "https://api.escuelajs.co/api/v1/"
     let enableDebugLogging = true
 }
 
 struct ProdConfiguration: Configuration {
-    let environmentName = "Production"
     let apiUrl = "https://api.escuelajs.co/api/v1/"
 }
 

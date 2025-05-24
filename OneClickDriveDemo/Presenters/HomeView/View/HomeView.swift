@@ -65,19 +65,18 @@ struct HomeView: View {
                             minPrice: viewModel.minPrice,
                             maxPrice: viewModel.maxPrice,
                             actions: .init(
-                            onApply: { apply in
-                                viewModel.selectedCategory = apply.0
-                                viewModel.minPrice = apply.1
-                                viewModel.maxPrice = apply.2
-
-                                showFilterSheet = false
-                                Task {
-                                    await viewModel.refreshProducts()
-                                }
-                            }, onClear: {
-                                showFilterSheet = false
-                                viewModel.clearFilters() // This already triggers a refresh via taskId
-                            })))
+                                onApply: { apply in
+                                    viewModel.selectedCategory = apply.category
+                                    viewModel.minPrice = apply.minPrice
+                                    viewModel.maxPrice = apply.maxPrice
+                                    showFilterSheet = false
+                                    Task {
+                                        await viewModel.refreshProducts()
+                                    }
+                                }, onClear: {
+                                    showFilterSheet = false
+                                    viewModel.clearFilters()
+                                })))
                 }
                 .alert("Logout", isPresented: $showLogoutAlert) {
                     Button("Cancel", role: .cancel) { }

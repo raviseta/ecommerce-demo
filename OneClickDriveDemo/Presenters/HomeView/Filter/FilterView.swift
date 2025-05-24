@@ -31,7 +31,7 @@ struct FilterView: View {
                     }
                 }
                 .frame(maxHeight: .infinity)
-
+                
                 HStack(spacing: 16) {
                     Button("Clear Filters") {
                         viewModel.clearFilters()
@@ -41,7 +41,7 @@ struct FilterView: View {
                     .padding()
                     .background(Color.gray.opacity(0.2))
                     .cornerRadius(8)
-
+                    
                     Button("Apply Filters") {
                         viewModel.applyFilters(apply: (viewModel.selectedCategory, viewModel.minPrice, viewModel.maxPrice))
                     }

@@ -12,19 +12,11 @@ import Observation
 @Observable
 @MainActor
 class LoginViewModel {
-    var email = "john@mail.com"
-    var password = "changeme"
+    var email = ""
+    var password = ""
     var isLoading = false
     var errorMessage: String?
     var alertToDisplay: AlertData?
-    
-    public init(email: String = "john@mail.com", password: String = "changeme", isLoading: Bool = false, errorMessage: String? = nil, alertToDisplay: AlertData? = nil) {
-        self.email = email
-        self.password = password
-        self.isLoading = isLoading
-        self.errorMessage = errorMessage
-        self.alertToDisplay = alertToDisplay
-    }
 
     private func validateInputs() -> String? {
         if email.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {

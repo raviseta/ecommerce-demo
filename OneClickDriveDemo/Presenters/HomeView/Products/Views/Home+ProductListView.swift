@@ -1,5 +1,5 @@
 //
-//  File.swift
+//  HomeView+ProductListView.swift
 //  OneClickDriveDemo
 //
 //  Created by Ravi Seta on 24/05/25.
@@ -28,7 +28,6 @@ extension HomeView {
                         .task {
                             await viewModel.loadMoreProductsIfNeeded(currentItem: model)
                         }
-                    
                 }
             }
         }

@@ -17,7 +17,7 @@ final class FilterViewModel {
     private let actions: Actions
     
     struct Actions {
-        var onApply: ((CategoryItemViewModel?, String, String)) -> Void
+        var onApply: ((category: CategoryItemViewModel?, minPrice: String, maxPrice: String)) -> Void
         var onClear: () -> Void
     }
     

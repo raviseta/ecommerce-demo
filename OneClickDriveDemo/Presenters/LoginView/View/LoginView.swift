@@ -14,33 +14,35 @@ struct LoginView: View {
                 .keyboardType(.emailAddress)
                 .autocapitalization(.none)
                 .padding()
-                .background(Color(.secondarySystemBackground))
+                .background(Color.getAppColor(.grayBackground))
                 .cornerRadius(8)
+                .foregroundColor(.getAppColor(.primaryTextColor))
 
             SecureField("Password", text: $viewModel.password)
                 .padding()
-                .background(Color(.secondarySystemBackground))
+                .background(Color.getAppColor(.grayBackground))
                 .cornerRadius(8)
+                .foregroundColor(.getAppColor(.primaryTextColor))
 
             if viewModel.isLoading {
                 ProgressView()
             } else {
-                Button(action: {
+                Button {
                     Task {
                         await viewModel.login(router: router)
                     }
-                }) {
+                } label: {
                     Text("Login")
                         .font(.headline)
-                        .foregroundColor(.white)
                         .padding()
                         .frame(maxWidth: .infinity)
-                        .background(Color.blue)
                         .cornerRadius(8)
+                        .background(Color.getAppColor(.theme))
+                        .foregroundStyle(.white)
                 }
             }
         }
-        .alert(for: $viewModel.alertToDisplay)
         .padding()
+        .alert(for: $viewModel.alertToDisplay)
     }
 }
