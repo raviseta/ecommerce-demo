@@ -40,7 +40,7 @@ class LoginViewModel {
     func login(router: AppRouter) async {
         if let validationError = validateInputs() {
             self.errorMessage = validationError
-            self.alertToDisplay = .init(title: "Validation Error", message: validationError, actions: [.init(title: "OK")])
+            self.alertToDisplay = .init(title: applicationName, message: validationError, actions: [.init(title: "OK")])
             return
         }
         

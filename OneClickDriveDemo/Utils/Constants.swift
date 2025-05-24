@@ -1,12 +1,11 @@
 //
 //  Constants.swift
-//  RecipeApp
+//  OneClickDriveDemo
 //
-//  Created by Ravi Seta on 24/01/25.
+//  Created by Ravi Seta on 22/05/25.
 //
 
-
-let applicationName = "Recipe App"
+let applicationName = "OneClickDrive"
 
 enum ErrorMessage: String {
     case invalidURL = "Invalid URL."
