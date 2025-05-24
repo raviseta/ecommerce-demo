@@ -62,7 +62,7 @@ class LoginViewModel {
             AppKeyChainManager.shared.save(key: .refreshToken, value: response.refreshToken)
             await fetchUserProfile()
             
-            DispatchQueue.main.async {
+            await MainActor.run {
                 router.showHome()
             }
             

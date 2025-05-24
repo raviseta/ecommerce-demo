@@ -1,6 +1,5 @@
 //
 //  AppColor.swift
-//  RecipeApp
 //
 //  Created by Ravi Seta on 26/01/25.
 //
@@ -12,7 +11,6 @@ public enum AppColor {
     case primaryTextColor
     case grayBackground
     case theme
-
 }
 
 public extension UIColor {

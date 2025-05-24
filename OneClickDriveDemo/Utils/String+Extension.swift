@@ -1,6 +1,5 @@
 //
 //  String+Extension.swift
-//  RecipeApp
 //
 //  Created by Ravi Seta on 25/01/25.
 //

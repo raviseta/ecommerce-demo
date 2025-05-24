@@ -1,6 +1,5 @@
 //
 //  Color+Extension.swift
-//  RecipeApp
 //
 //  Created by Ravi Seta on 26/01/25.
 //
@@ -47,7 +46,4 @@ public extension UIColor {
             blue:  CGFloat((intCode) & 0xFF) / 255.0, alpha: 1.0
         )
     }
-    
 }
-
-

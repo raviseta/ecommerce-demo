@@ -1,6 +1,5 @@
 //
 //  ImageCache.swift
-//  RecipeApp
 //
 //  Created by Ravi Seta on 26/01/25.
 //

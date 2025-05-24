@@ -1,6 +1,5 @@
 //
 //  Shimmer.swift
-//  RecipeApp
 //
 //  Created by Ravi Seta on 27/01/25.
 //

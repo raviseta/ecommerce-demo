@@ -1,6 +1,5 @@
 //
 //  CellDataSource.swift
-//  RecipeApp
 //
 //  Created by Ravi Seta on 25/01/25.
 //
@@ -13,10 +12,6 @@ public enum CellDataSource<T: Identifiable>: Hashable,
                                              Identifiable {
     case loader(CellLoaderMeta)
     case data(T)
-    
-//    public var id: String {
-//        return UUID().uuidString
-//    }
     
     public var id: String {
         switch self {
@@ -66,7 +61,6 @@ public enum CellDataSource<T: Identifiable>: Hashable,
     }
 }
 
-
 public struct CellLoaderMeta: Equatable {
     public init(id: String = UUID().uuidString,
                 type: CellLoaderType = .general) {
@@ -77,7 +71,6 @@ public struct CellLoaderMeta: Equatable {
     public let id: String
     public let type: CellLoaderType
 }
-
 
 public enum CellLoaderType {
     case general
