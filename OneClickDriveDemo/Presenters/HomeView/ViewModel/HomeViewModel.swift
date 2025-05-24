@@ -7,6 +7,7 @@
 
 import Foundation
 import Observation
+import SwiftUI
 
 @Observable
 @MainActor
@@ -21,7 +22,8 @@ final class HomeViewModel {
     var minPrice: String = ""
     var maxPrice: String = ""
     var filterCategories: [CategoryItemViewModel] = []
-    
+   var childContent: ChildContent = .none
+
     private var offset = 0
     private let limit = 10
     private var isLoading = false
@@ -145,5 +147,21 @@ final class HomeViewModel {
         Task {
             await refreshProducts()
         }
+    }
+    
+    var isFullScreenPresenting: Binding<Bool> {
+        return Binding<Bool>.init(get: { return self.childContent.isfullScreen },
+                                  set: { [weak self] isPresenting,_ in
+            guard let `self` = self else { return }
+            if !isPresenting && self.childContent.isfullScreen { self.childContent = .none  }
+        })
+    }
+    
+    var isBottomSheetPresenting: Binding<Bool> {
+        return Binding<Bool>.init(get: { return self.childContent.isSheet },
+                                  set: { [weak self] isPresenting,_ in
+            guard let `self` = self else { return }
+            if !isPresenting && self.childContent.isSheet { self.childContent = .none  }
+        })
     }
 }

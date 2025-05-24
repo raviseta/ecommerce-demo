@@ -16,20 +16,31 @@ extension HomeView {
             emptyStateView
             
         } else {
-            ForEach(viewModel.products, id: \.id) { data in
+            ForEach(viewModel.products, id: \.id) { (data: CellDataSource<ProductItemViewModel>) in
                 switch data {
                 case .loader(_):
                     self.prepareProductListItem(model: .placeholder)
                         .shimmering()
                     
                 case .data(let model):
-                    self.prepareProductListItem(model: model)
-                        .padding(.bottom, 12)
-                        .task {
-                            await viewModel.loadMoreProductsIfNeeded(currentItem: model)
-                        }
+                    tapProduct(for: model)
                 }
             }
+        }
+    }
+    
+    @ViewBuilder
+    private func tapProduct(for model: ProductItemViewModel) -> some View {
+        Button {
+            self.selectedProduct = model
+            viewModel.childContent = .openProductDetail
+        } label: {
+            self.prepareProductListItem(model: model)
+        }
+        .buttonStyle(.plain)
+        .padding(.bottom, 12)
+        .task {
+            await viewModel.loadMoreProductsIfNeeded(currentItem: model)
         }
     }
     

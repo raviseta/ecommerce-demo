@@ -54,7 +54,7 @@ extension ProductItemViewModel {
             imageUrl: item.images.first ?? "https://example.com/food.png",
             price: item.price,
             description: item.description,
-            images: []
+            images: item.images
         )
     }
 }

@@ -11,8 +11,8 @@ struct HomeView: View {
     @State var viewModel = HomeViewModel()
     @EnvironmentObject var router: AppRouter
     @State private var hasLoadedInitialData = false
-    @State private var showFilterSheet = false
     @State private var showLogoutAlert = false
+    @State var selectedProduct: ProductItemViewModel?
     
     var body: some View {
         NavigationView {
@@ -52,31 +52,20 @@ struct HomeView: View {
                 }
                                     ,trailing:
                                         Button(action: {
-                    showFilterSheet = true
+                    viewModel.childContent = .openFilter
                 }) {
                     Image(systemName: "slider.horizontal.3")
                 }
                 )
-                .sheet(isPresented: $showFilterSheet) {
-                    FilterView(
-                        viewModel: FilterViewModel(
-                            categories: viewModel.filterCategories,
-                            selectedCategory: viewModel.selectedCategory,
-                            minPrice: viewModel.minPrice,
-                            maxPrice: viewModel.maxPrice,
-                            actions: .init(
-                                onApply: { apply in
-                                    viewModel.selectedCategory = apply.category
-                                    viewModel.minPrice = apply.minPrice
-                                    viewModel.maxPrice = apply.maxPrice
-                                    showFilterSheet = false
-                                    Task {
-                                        await viewModel.refreshProducts()
-                                    }
-                                }, onClear: {
-                                    showFilterSheet = false
-                                    viewModel.clearFilters()
-                                })))
+                .sheet(isPresented: viewModel.isBottomSheetPresenting) {
+                    filterView
+                }
+                .fullScreenCover(isPresented: viewModel.isFullScreenPresenting) {
+                    if let selectedProduct {
+                        ProductDetailView(
+                            viewModel: ProductDetailViewModel(product: selectedProduct)
+                        )
+                    }
                 }
                 .alert("Logout", isPresented: $showLogoutAlert) {
                     Button("Cancel", role: .cancel) { }
@@ -90,7 +79,31 @@ struct HomeView: View {
             }
         }
     }
+    
+    @ViewBuilder
+    var filterView: some View {
+        FilterView(
+            viewModel: FilterViewModel(
+                categories: viewModel.filterCategories,
+                selectedCategory: viewModel.selectedCategory,
+                minPrice: viewModel.minPrice,
+                maxPrice: viewModel.maxPrice,
+                actions: .init(
+                    onApply: { apply in
+                        viewModel.selectedCategory = apply.category
+                        viewModel.minPrice = apply.minPrice
+                        viewModel.maxPrice = apply.maxPrice
+                        viewModel.childContent = .none
+                        Task {
+                            await viewModel.refreshProducts()
+                        }
+                    }, onClear: {
+                        viewModel.clearFilters()
+                    })))
+    }
 }
+
+
 
 @ViewBuilder
 var emptyStateView: some View {
