@@ -10,7 +10,6 @@ import SwiftUI
 
 class ProductDetailViewModel {
     var product: ProductItemViewModel
-    
 
     init(product: ProductItemViewModel) {
         self.product = product
