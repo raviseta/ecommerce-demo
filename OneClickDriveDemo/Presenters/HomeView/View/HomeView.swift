@@ -64,7 +64,7 @@ struct HomeView: View {
     var headerSection: some View {
         HStack {
             VStack(alignment: .leading, spacing: 4) {
-                Text("Welcome Back!")
+                Text("Welcome Back, \(UserManager.shared.userName)!")
                     .font(.title2)
                     .fontWeight(.semibold)
                 

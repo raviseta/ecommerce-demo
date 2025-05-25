@@ -28,6 +28,7 @@ class AppRouter: ObservableObject {
     }
 
     func showLogin() {
+        UserManager.shared.clearUser()
         currentScreen = .login
     }
 }

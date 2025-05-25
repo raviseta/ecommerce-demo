@@ -81,6 +81,10 @@ class LoginViewModel {
                 options: nil,
                 responseType: UserProfile.self
             )
+            
+            await MainActor.run {
+                UserManager.shared.setUser(response)
+            }
             print("response", response)
         }
         catch {
