@@ -102,7 +102,7 @@ struct FilterActionButtons: View {
             }
             .frame(maxWidth: .infinity)
             .padding()
-            .background(Color.blue)
+            .background(Color.getAppColor(.theme))
             .foregroundColor(.white)
             .cornerRadius(8)
         }

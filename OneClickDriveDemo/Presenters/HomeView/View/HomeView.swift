@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import AppUtil
 
 struct HomeView: View {
     @State var viewModel = HomeViewModel()
@@ -63,41 +64,33 @@ struct HomeView: View {
     @ViewBuilder
     var headerSection: some View {
         HStack {
-            VStack(alignment: .leading, spacing: 4) {
-                Text("Welcome Back, \(UserManager.shared.userName)!")
-                    .font(.title2)
-                    .fontWeight(.semibold)
-                
-                Text("Discover amazing products")
-                    .font(.subheadline)
-                    .foregroundColor(.secondary)
-            }
+            Text("Welcome, \(UserManager.shared.userName)!")
+                .font(AppFont.title2.ui)
             
             Spacer()
             
-            HStack(spacing: 16) {
-                Button(action: {
-                    viewModel.childContent = .openFilter
-                }) {
-                    Image(systemName: "slider.horizontal.3")
-                        .font(.title3)
-                        .foregroundColor(.primary)
-                        .frame(width: 44, height: 44)
-                        .background(Color.gray.opacity(0.1))
-                        .clipShape(Circle())
-                }
-                
-                Button(action: {
-                    showLogoutAlert = true
-                }) {
-                    Image(systemName: "power")
-                        .font(.title3)
-                        .foregroundColor(.red)
-                        .frame(width: 44, height: 44)
-                        .background(Color.red.opacity(0.1))
-                        .clipShape(Circle())
-                }
+            Button(action: {
+                viewModel.childContent = .openFilter
+            }) {
+                Image(systemName: "slider.horizontal.3")
+                    .font(AppFont.title3.ui)
+                    .foregroundColor(.primary)
+                    .frame(width: 44, height: 44)
+                    .background(Color.gray.opacity(0.1))
+                    .clipShape(Circle())
             }
+            
+            Button(action: {
+                showLogoutAlert = true
+            }) {
+                Image(systemName: "power")
+                    .font(AppFont.title3.ui)
+                    .foregroundColor(.red)
+                    .frame(width: 44, height: 44)
+                    .background(Color.red.opacity(0.1))
+                    .clipShape(Circle())
+            }
+            
         }
         .padding(.horizontal, 20)
         .padding(.top, 10)
@@ -137,7 +130,7 @@ struct HomeView: View {
         VStack(alignment: .leading, spacing: 16) {
             HStack {
                 Text("Categories")
-                    .font(.title3)
+                    .font(AppFont.title3.ui)
                     .fontWeight(.semibold)
                     .padding(.horizontal, 20)
                 
@@ -172,7 +165,7 @@ struct HomeView: View {
         VStack(alignment: .leading, spacing: 16) {
             HStack {
                 Text("Products")
-                    .font(.title3)
+                    .font(AppFont.title3.ui)
                     .fontWeight(.semibold)
                     .padding(.horizontal, 20)
                 
@@ -205,7 +198,7 @@ struct HomeView: View {
             }
             
             Text(model.categoryName)
-                .font(.caption)
+                .font(AppFont.popinsMedium.ui)
                 .fontWeight(isSelected ? .semibold : .regular)
                 .foregroundColor(isSelected ? .blue : .primary)
                 .multilineTextAlignment(.center)

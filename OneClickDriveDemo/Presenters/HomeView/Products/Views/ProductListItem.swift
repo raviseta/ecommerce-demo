@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import AppUtil
 
 struct ProductListItem: View {
     
@@ -53,28 +54,26 @@ private extension ProductListItem {
     var infoView: some View {
         VStack(alignment: .leading, spacing: 8) {
             Text(viewModel.name)
-                .font(.headline)
-                .fontWeight(.medium)
+                .font(AppFont.bodyMedium.ui)
                 .foregroundColor(.primary)
                 .lineLimit(2)
                 .multilineTextAlignment(.leading)
             
             Text(viewModel.description)
-                .font(.caption)
+                .font(AppFont.description.ui)
                 .foregroundColor(.secondary)
                 .lineLimit(2)
                 .multilineTextAlignment(.leading)
             
             HStack {
                 Text("$\(viewModel.price, specifier: "%.2f")")
-                    .font(.title3)
-                    .fontWeight(.bold)
-                    .foregroundColor(.blue)
+                    .font(AppFont.title3.ui)
+                    .foregroundColor(Color.getAppColor(.theme))
                     .frame(maxWidth: .infinity, alignment: .leading)
                 
                 Image(systemName: "plus.circle.fill")
-                    .font(.title3)
-                    .foregroundColor(.blue)
+                    .font(AppFont.title3.ui)
+                    .foregroundColor(Color.getAppColor(.theme))
             }
         }
         .padding(.horizontal, 12)

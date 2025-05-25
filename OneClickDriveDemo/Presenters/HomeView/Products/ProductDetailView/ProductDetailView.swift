@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import AppUtil
 
 struct ProductDetailView: View {
     @Environment(\.dismiss) var dismiss
@@ -28,8 +29,12 @@ struct ProductDetailView: View {
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    Button("Done") {
+                    Button {
                         dismiss()
+                    } label: {
+                        Image(systemName: "xmark.circle.fill")
+                            .font(AppFont.title3.ui)
+                            .foregroundColor(.gray)
                     }
                 }
             }
@@ -95,12 +100,10 @@ struct ProductTitleSection: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
             Text(title)
-                .font(.largeTitle)
-                .fontWeight(.bold)
+                .font(AppFont.largeTitle.ui)
 
             Text(price)
-                .font(.title2)
-                .fontWeight(.semibold)
+                .font(AppFont.title2.ui)
                 .foregroundColor(.green)
         }
     }
@@ -112,11 +115,11 @@ struct ProductDescriptionSection: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
             Text("Description")
-                .font(.title3)
-                .fontWeight(.medium)
+                .font(AppFont.title3.ui)
             
             Text(description)
-                .font(.body)
+                .font(AppFont.description.ui)
+
         }
     }
 }

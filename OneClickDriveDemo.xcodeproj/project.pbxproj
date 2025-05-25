@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		AC93E82D2DE309A50066A619 /* AppUtil in Frameworks */ = {isa = PBXBuildFile; productRef = AC93E82C2DE309A50066A619 /* AppUtil */; };
 		ACB759CF2DDEEDDA00814875 /* KeychainAccess in Frameworks */ = {isa = PBXBuildFile; productRef = ACB759CE2DDEEDDA00814875 /* KeychainAccess */; };
 /* End PBXBuildFile section */
 
@@ -27,6 +28,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AC93E82D2DE309A50066A619 /* AppUtil in Frameworks */,
 				ACB759CF2DDEEDDA00814875 /* KeychainAccess in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -71,6 +73,7 @@
 			name = OneClickDriveDemo;
 			packageProductDependencies = (
 				ACB759CE2DDEEDDA00814875 /* KeychainAccess */,
+				AC93E82C2DE309A50066A619 /* AppUtil */,
 			);
 			productName = OneClickDriveDemo;
 			productReference = AC039E232DDE071500468D0F /* OneClickDriveDemo.app */;
@@ -102,6 +105,7 @@
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
 				ACB759CD2DDEEDDA00814875 /* XCRemoteSwiftPackageReference "KeychainAccess" */,
+				AC93E82B2DE309A50066A619 /* XCRemoteSwiftPackageReference "AppUtil" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = AC039E242DDE071500468D0F /* Products */;
@@ -339,6 +343,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		AC93E82B2DE309A50066A619 /* XCRemoteSwiftPackageReference "AppUtil" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/raviseta/AppUtil.git";
+			requirement = {
+				branch = main;
+				kind = branch;
+			};
+		};
 		ACB759CD2DDEEDDA00814875 /* XCRemoteSwiftPackageReference "KeychainAccess" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/kishikawakatsumi/KeychainAccess.git";
@@ -350,6 +362,11 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		AC93E82C2DE309A50066A619 /* AppUtil */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = AC93E82B2DE309A50066A619 /* XCRemoteSwiftPackageReference "AppUtil" */;
+			productName = AppUtil;
+		};
 		ACB759CE2DDEEDDA00814875 /* KeychainAccess */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = ACB759CD2DDEEDDA00814875 /* XCRemoteSwiftPackageReference "KeychainAccess" */;

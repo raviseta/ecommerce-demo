@@ -1,4 +1,5 @@
 import SwiftUI
+import AppUtil
 
 struct LoginView: View {
     @State private var viewModel: LoginViewModel = LoginViewModel()
@@ -7,8 +8,7 @@ struct LoginView: View {
     var body: some View {
         VStack(spacing: 20) {
             Text("Login")
-                .font(.largeTitle)
-                .fontWeight(.bold)
+                .font(AppFont.largeTitle.ui)
 
             TextField("Email", text: $viewModel.email)
                 .keyboardType(.emailAddress)
@@ -33,7 +33,7 @@ struct LoginView: View {
                     }
                 } label: {
                     Text("Login")
-                        .font(.headline)
+                        .font(AppFont.title3.ui)
                         .padding()
                         .frame(maxWidth: .infinity)
                         .cornerRadius(8)
