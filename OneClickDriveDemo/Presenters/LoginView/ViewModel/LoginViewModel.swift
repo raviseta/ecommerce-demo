@@ -12,8 +12,8 @@ import Observation
 @Observable
 @MainActor
 class LoginViewModel {
-    var email = ""
-    var password = ""
+    var email = "john@mail.com"
+    var password = "changeme"
     var isLoading = false
     var errorMessage: String?
     var alertToDisplay: AlertData?

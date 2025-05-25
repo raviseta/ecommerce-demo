@@ -78,9 +78,8 @@ final class HomeViewModel {
             offset = 0
             hasMoreProducts = true
             products = []
+            products = [.loader(.init()), .loader(.init()), .loader(.init())]
         }
-        
-        products = [.loader(.init()), .loader(.init()), .loader(.init())]
         
         if isLoading || !hasMoreProducts {
             return
