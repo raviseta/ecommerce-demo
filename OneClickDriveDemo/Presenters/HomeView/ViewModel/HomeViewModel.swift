@@ -7,7 +7,7 @@
 
 import Foundation
 import Observation
-import SwiftUI
+import Combine
 
 @Observable
 @MainActor
@@ -22,11 +22,35 @@ final class HomeViewModel {
     var minPrice: String = ""
     var maxPrice: String = ""
     var filterCategories: [CategoryItemViewModel] = []
-   var childContent: ChildContent = .none
+    var childContent: ChildContent = .none
+    var searchText: String = "" {
+        didSet {
+            searchSubject.send(searchText)
+        }
+    }
 
     private var offset = 0
     private let limit = 10
     private var isLoading = false
+    
+    private let searchSubject = PassthroughSubject<String, Never>()
+    private var cancellables = Set<AnyCancellable>()
+    
+    init() {
+        setupSearchDebouncing()
+    }
+    
+    private func setupSearchDebouncing() {
+        searchSubject
+            .debounce(for: .milliseconds(500), scheduler: DispatchQueue.main)
+            .removeDuplicates()
+            .sink { [weak self] searchText in
+                Task { @MainActor in
+                    await self?.performSearch()
+                }
+            }
+            .store(in: &cancellables)
+    }
     
     func loadInitialData() async {
         await fetchCategories()
@@ -99,6 +123,9 @@ final class HomeViewModel {
         if let maxPriceDouble = Double(maxPrice), maxPriceDouble > 0 {
             params["price_max"] = maxPriceDouble
         }
+        if !searchText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+            params["search"] = searchText.trimmingCharacters(in: .whitespacesAndNewlines)
+        }
         
         do {
             let response = try await APIManager.shared.perform(
@@ -143,24 +170,13 @@ final class HomeViewModel {
         selectedCategory = nil
         minPrice = ""
         maxPrice = ""
+        searchText = ""
         Task {
             await refreshProducts()
         }
     }
     
-    var isFullScreenPresenting: Binding<Bool> {
-        return Binding<Bool>.init(get: { return self.childContent.isfullScreen },
-                                  set: { [weak self] isPresenting,_ in
-            guard let `self` = self else { return }
-            if !isPresenting && self.childContent.isfullScreen { self.childContent = .none  }
-        })
-    }
-    
-    var isBottomSheetPresenting: Binding<Bool> {
-        return Binding<Bool>.init(get: { return self.childContent.isSheet },
-                                  set: { [weak self] isPresenting,_ in
-            guard let `self` = self else { return }
-            if !isPresenting && self.childContent.isSheet { self.childContent = .none  }
-        })
+    func performSearch() async {
+        await refreshProducts()
     }
 }

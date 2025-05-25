@@ -8,7 +8,6 @@
 import Foundation
 
 public typealias Parameters = [String: any Any & Sendable]
-public typealias HTTPHeaders = [String: String]
 
 struct RestOptions {
     var headers: [String:String]?

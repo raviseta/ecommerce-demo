@@ -16,31 +16,7 @@ extension HomeView {
                 emptyStateView
                 
             } else {
-                ForEach(self.viewModel.categories, id: \.id) { data in
-                    switch data {
-                    case .loader(_):
-                        self.prepareCategoryItem(model: .placeholder, isSelected: false) {}
-                            .frame(width: proxy.size.width * 0.9)
-                            .shimmering()
-                        
-                    case .data(let model):
-                        self.prepareCategoryItem(
-                            model: model,
-                            isSelected: self.viewModel.selectedCategory?.id == model.id,
-                            action: {
-                                if self.viewModel.selectedCategory?.id == model.id {
-                                    self.viewModel.selectedCategory = nil
-                                } else {
-                                    self.viewModel.selectedCategory = model
-                                }
-                                Task {
-                                    await self.viewModel.refreshProducts()
-                                }
-                            }
-                        )
-                        .frame(width: proxy.size.width * 0.9)
-                    }
-                }
+                categoryListView(for: proxy)
             }
         }
         .padding(.top, 16)
@@ -57,5 +33,34 @@ extension HomeView {
             .onTapGesture {
                 action()
             }
+    }
+    
+    func categoryListView(for proxy: GeometryProxy) -> some View {
+        
+        ForEach(self.viewModel.categories, id: \.id) { data in
+            switch data {
+            case .loader(_):
+                self.prepareCategoryItem(model: .placeholder, isSelected: false) {}
+                    .frame(width: proxy.size.width * 0.9)
+                    .shimmering()
+                
+            case .data(let model):
+                self.prepareCategoryItem(
+                    model: model,
+                    isSelected: self.viewModel.selectedCategory?.id == model.id,
+                    action: {
+                        if self.viewModel.selectedCategory?.id == model.id {
+                            self.viewModel.selectedCategory = nil
+                        } else {
+                            self.viewModel.selectedCategory = model
+                        }
+                        Task {
+                            await self.viewModel.refreshProducts()
+                        }
+                    }
+                )
+                .frame(width: proxy.size.width * 0.9)
+            }
+        }
     }
 }

@@ -5,7 +5,6 @@
 //  Created by Ravi Seta on 24/05/25.
 //
 
-
 enum ChildContent: Equatable {
     
     case openProductDetail

@@ -20,6 +20,8 @@ struct HomeView: View {
                 VStack(spacing: 0) {
                     headerSection
                     
+                    searchSection
+                    
                     categoriesSection
                     
                     productsSection
@@ -99,6 +101,34 @@ struct HomeView: View {
         }
         .padding(.horizontal, 20)
         .padding(.top, 10)
+        .padding(.bottom, 20)
+    }
+    
+    @ViewBuilder
+    var searchSection: some View {
+        VStack(spacing: 12) {
+            HStack {
+                Image(systemName: "magnifyingglass")
+                    .foregroundColor(.gray)
+                
+                TextField("Search products...", text: $viewModel.searchText)
+                    .textFieldStyle(.plain)
+                
+                if !viewModel.searchText.isEmpty {
+                    Button {
+                        viewModel.searchText = ""
+                    } label: {
+                        Image(systemName: "xmark.circle.fill")
+                            .foregroundColor(.gray)
+                    }
+                }
+            }
+            .padding(.horizontal, 16)
+            .padding(.vertical, 12)
+            .background(Color.gray.opacity(0.1))
+            .clipShape(RoundedRectangle(cornerRadius: 12))
+        }
+        .padding(.horizontal, 20)
         .padding(.bottom, 20)
     }
     
