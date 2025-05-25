@@ -90,8 +90,8 @@ final class HomeViewModel {
         
         var params: Parameters = ["offset": offset, "limit": limit]
         
-        if let categoryId = selectedCategory?.id {
-            params["categoryId"] = categoryId
+        if let selectedCategory = selectedCategory {
+            params["categoryId"] = selectedCategory.id
         }
         if let minPriceDouble = Double(minPrice), minPriceDouble > 0 {
             params["price_min"] = minPriceDouble
