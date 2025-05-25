@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import AppUtil
 
 struct EmptyStateView: View {
    
@@ -16,27 +17,33 @@ struct EmptyStateView: View {
    }
    
     var body: some View {
-       ZStack(alignment: .center) {
-           VStack(spacing: 0) {
-               
-               Image(viewModel.image.rawValue)
-                   .resizable()
-                   .scaledToFit()
-                   .frame(width: viewModel.size.width, height: viewModel.size.height)
-                   .padding(.bottom, 10)
-               
-               Text(viewModel.title)
-                   .foregroundStyle(Color.black)
-                   .frame(maxWidth: .infinity,alignment: .center)
-                   .padding(.top, 12)
-               
-               Text(viewModel.message)
-                   .foregroundStyle(Color.black)
-                   .frame(maxWidth: .infinity,alignment: .center)
-                   .padding(.top, 4)
-           }
-           .padding(.horizontal, 16)
-           .padding(.vertical, 16)
-       }
-   }
+        VStack(spacing: 24) {
+            ZStack {
+                Circle()
+                    .fill(Color.getAppColor(.theme).opacity(0.1))
+                    .frame(width: 120, height: 120)
+                
+                Image(systemName: "cart.badge.questionmark")
+                    .font(.system(size: 50))
+                    .foregroundColor(.getAppColor(.theme))
+            }
+            .padding(.top, 40)
+            
+            VStack(spacing: 12) {
+                Text(viewModel.title)
+                    .font(AppFont.title2.ui)
+                    .fontWeight(.semibold)
+                    .foregroundColor(.getAppColor(.primaryTextColor))
+                    .multilineTextAlignment(.center)
+                
+                Text(viewModel.message)
+                    .font(AppFont.description.ui)
+                    .foregroundColor(.getAppColor(.primaryTextColor).opacity(0.7))
+                    .multilineTextAlignment(.center)
+                    .padding(.horizontal, 20)
+            }
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .background(Color.getAppColor(.gray30))
+    }
 }

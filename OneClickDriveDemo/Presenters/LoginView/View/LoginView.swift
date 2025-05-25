@@ -4,45 +4,62 @@ import AppUtil
 struct LoginView: View {
     @State private var viewModel: LoginViewModel = LoginViewModel()
     @EnvironmentObject var router: AppRouter
-
+    
     var body: some View {
-        VStack(spacing: 20) {
-            Text("Login")
-                .font(AppFont.largeTitle.ui)
-
-            TextField("Email", text: $viewModel.email)
-                .keyboardType(.emailAddress)
-                .autocapitalization(.none)
-                .padding()
-                .background(Color.getAppColor(.grayBackground))
-                .cornerRadius(8)
-                .foregroundColor(.getAppColor(.primaryTextColor))
-
-            SecureField("Password", text: $viewModel.password)
-                .padding()
-                .background(Color.getAppColor(.grayBackground))
-                .cornerRadius(8)
-                .foregroundColor(.getAppColor(.primaryTextColor))
-
-            if viewModel.isLoading {
-                ProgressView()
-            } else {
-                Button {
-                    Task {
-                        await viewModel.login(router: router)
+        GeometryReader { geometry in
+            ScrollView {
+                VStack(spacing: 0) {
+                    LoginHeader(
+                        title: "OneClickDrive",
+                        subtitle: "Welcome back! Please sign in to continue",
+                        systemImage: "cart.fill"
+                    )
+                    .padding(.bottom, 50)
+                    
+                    VStack(spacing: 20) {
+                        LoginTextField(
+                            title: "Email",
+                            placeholder: "Enter your email",
+                            systemImage: "envelope",
+                            text: $viewModel.email,
+                            keyboardType: .emailAddress
+                        )
+                        
+                        LoginTextField(
+                            title: "Password",
+                            placeholder: "Enter your password",
+                            systemImage: "lock",
+                            text: $viewModel.password,
+                            isSecure: true
+                        )
+                        
+                        LoginButton(
+                            title: "Sign In",
+                            loadingTitle: "Signing In...",
+                            isLoading: viewModel.isLoading
+                        ) {
+                            Task {
+                                await viewModel.login(router: router)
+                            }
+                        }
+                        .padding(.top, 10)
+                        
+                        Button("Forgot Password?") {
+                            // Handle forgot password
+                        }
+                        .font(AppFont.popinsMedium.ui)
+                        .foregroundColor(.getAppColor(.theme))
+                        .padding(.top, 10)
                     }
-                } label: {
-                    Text("Login")
-                        .font(AppFont.title3.ui)
-                        .padding()
-                        .frame(maxWidth: .infinity)
-                        .cornerRadius(8)
-                        .background(Color.getAppColor(.theme))
-                        .foregroundStyle(.white)
+                    .padding(.horizontal, 32)
+                    
+                    Spacer(minLength: 40)
                 }
+                .frame(minHeight: geometry.size.height)
             }
         }
-        .padding()
+        .background(Color.getAppColor(.gray30))
         .alert(for: $viewModel.alertToDisplay)
+        .ignoresSafeArea(.keyboard, edges: .bottom)
     }
 }
