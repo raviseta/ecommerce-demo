@@ -19,7 +19,7 @@ extension HomeView {
             ForEach(viewModel.products, id: \.id) { (data: CellDataSource<ProductItemViewModel>) in
                 switch data {
                 case .loader(_):
-                    self.prepareProductListItem(model: .placeholder)
+                    productPlaceholder
                         .shimmering()
                     
                 case .data(let model):
@@ -35,7 +35,7 @@ extension HomeView {
             self.selectedProduct = model
             viewModel.childContent = .openProductDetail
         } label: {
-            self.prepareProductListItem(model: model)
+            ProductListItem(viewModel: model)
         }
         .buttonStyle(.plain)
         .padding(.bottom, 12)
@@ -44,10 +44,45 @@ extension HomeView {
         }
     }
     
-    func prepareProductListItem(model: ProductItemViewModel) -> some View {
-        ProductListItem(viewModel: model)
-            .frame(maxWidth: .infinity)
-            .background(Color.getAppColor(.gray30))
-            .clipShape(RoundedRectangle(cornerRadius: 12))
+    @ViewBuilder
+    var productPlaceholder: some View {
+        VStack(spacing: 0) {
+            Rectangle()
+                .fill(Color.gray.opacity(0.2))
+                .frame(height: 140)
+                .clipShape(RoundedRectangle(cornerRadius: 12))
+                .padding(.top, 8)
+                .padding(.horizontal, 8)
+            
+            VStack(alignment: .leading, spacing: 8) {
+                Rectangle()
+                    .fill(Color.gray.opacity(0.2))
+                    .frame(height: 16)
+                    .cornerRadius(4)
+                
+                Rectangle()
+                    .fill(Color.gray.opacity(0.2))
+                    .frame(height: 12)
+                    .cornerRadius(4)
+                
+                HStack {
+                    Rectangle()
+                        .fill(Color.gray.opacity(0.2))
+                        .frame(width: 60, height: 20)
+                        .cornerRadius(4)
+                    
+                    Spacer()
+                    
+                    Circle()
+                        .fill(Color.gray.opacity(0.2))
+                        .frame(width: 24, height: 24)
+                }
+            }
+            .padding(.horizontal, 12)
+            .padding(.vertical, 12)
+        }
+        .background(Color.white)
+        .clipShape(RoundedRectangle(cornerRadius: 16))
+        .shadow(color: Color.black.opacity(0.08), radius: 8, x: 0, y: 2)
     }
 }

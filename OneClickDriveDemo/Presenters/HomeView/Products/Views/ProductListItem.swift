@@ -5,7 +5,7 @@
 //  Created by Ravi Seta on 22/05/25.
 //
 
-import SwiftUICore
+import SwiftUI
 
 struct ProductListItem: View {
     
@@ -13,14 +13,17 @@ struct ProductListItem: View {
     
     var body: some View {
         VStack(spacing: 0) {
-            
             imageView
             
             infoView
-            
         }
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .cornerRadius(8.0)
+        .background(Color.white)
+        .clipShape(RoundedRectangle(cornerRadius: 16))
+        .shadow(color: Color.black.opacity(0.08), radius: 8, x: 0, y: 2)
+        .overlay(
+            RoundedRectangle(cornerRadius: 16)
+                .stroke(Color.gray.opacity(0.1), lineWidth: 1)
+        )
     }
 }
 
@@ -30,27 +33,52 @@ private extension ProductListItem {
     var imageView: some View {
         if let url = URL(string: viewModel.imageUrl) {
             CachedAsyncImage(url: url)
-                .frame(width: imageSize.width, height: imageSize.height)
+                .aspectRatio(contentMode: .fill)
+                .frame(height: 140)
+                .clipped()
+                .clipShape(RoundedRectangle(cornerRadius: 12))
+                .padding(.top, 8)
+                .padding(.horizontal, 8)
+        } else {
+            Rectangle()
+                .fill(Color.gray.opacity(0.2))
+                .frame(height: 140)
+                .clipShape(RoundedRectangle(cornerRadius: 12))
+                .padding(.top, 8)
+                .padding(.horizontal, 8)
         }
     }
     
     @ViewBuilder
     var infoView: some View {
-        VStack(alignment: .leading, spacing: 5) {
+        VStack(alignment: .leading, spacing: 8) {
             Text(viewModel.name)
-                .foregroundStyle(Color.black)
+                .font(.headline)
+                .fontWeight(.medium)
+                .foregroundColor(.primary)
+                .lineLimit(2)
+                .multilineTextAlignment(.leading)
             
             Text(viewModel.description)
-                .font(.subheadline)
-                .foregroundStyle(Color.black)
-            
-            Text("$\(viewModel.price, specifier: "%.2f")")
-                .font(.subheadline)
+                .font(.caption)
                 .foregroundColor(.secondary)
+                .lineLimit(2)
+                .multilineTextAlignment(.leading)
+            
+            HStack {
+                Text("$\(viewModel.price, specifier: "%.2f")")
+                    .font(.title3)
+                    .fontWeight(.bold)
+                    .foregroundColor(.blue)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                
+                Image(systemName: "plus.circle.fill")
+                    .font(.title3)
+                    .foregroundColor(.blue)
+            }
         }
-    }
-    
-    var imageSize: CGSize {
-        return .init(width: 80, height: 80)
+        .padding(.horizontal, 12)
+        .padding(.vertical, 12)
+        .frame(maxWidth: .infinity, alignment: .leading)
     }
 }
